@@ -1,2 +1,2 @@
-# web-api
+# InTouche-api
 backend for InTouche
