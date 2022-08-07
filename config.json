@@ -1,0 +1,25 @@
+{
+  "service": "intouche-back-core",
+  "api": {
+    "address": "",
+    "port": 8080,
+    "read_timeout": "10s",
+    "write_timeout": "10s",
+    "shutdown_timeout": "10s"
+  },
+  "health_api": {
+    "address": "",
+    "port": 7777,
+    "endpoint": "/healthz"
+  },
+  "db": {
+    "name": "postgres",
+    "host": "db_bo",
+    "password": "postgres",
+    "port": "5432",
+    "ssl_mode": "disable",
+    "user": "postgres",
+    "max_open_conns": 2,
+    "max_idle_conns": 2
+  }
+}
