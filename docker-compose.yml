@@ -4,7 +4,7 @@ services:
   intouche-back-core:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.local
     restart: always
     ports:
       - "8080:8080"

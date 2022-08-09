@@ -10,7 +10,7 @@ RUN export CGO_ENABLED=0 && make build
 FROM alpine:latest
 
 # Copy our static executable and config
-COPY --from=builder /go/src/intouche-back-core/config.json config.json
+COPY --from=builder /go/src/intouche-back-core/config.local.json config.json
 
 COPY --from=builder /go/src/intouche-back-core/bin/backoffice-cebuana-api go/bin/intouche-back-core
 # Run the binary.

@@ -10,6 +10,7 @@ import (
 	log "go.uber.org/zap"
 
 	"intouche-back-core/internal/config"
+	"intouche-back-core/internal/model"
 )
 
 const (
@@ -18,16 +19,27 @@ const (
 	constBearerAuthPrefix = "Bearer"
 )
 
-type Server struct {
-	*http.Server
-	rm     *ResponseManager
-	cfg    *config.Config
-	logger *log.SugaredLogger
-}
+type (
+	Server struct {
+		*http.Server
+		respond *ResponseManager
+		cfg     *config.Config
+		logger  *log.SugaredLogger
+
+		userStore userStore
+	}
+	userStore interface {
+		Insert(ctx context.Context, user *model.User) error
+		GetByID(ctx context.Context, id string) (*model.User, error)
+		GetByEmail(ctx context.Context, email string) (*model.User, error)
+	}
+	authService interface {
+		VerifyToken(ctx context.Context, token string) (bool, error)
+	}
+)
 
 //TODO: add minio support
-func NewServer(cfg *config.Config, logger *log.SugaredLogger,
-
+func NewServer(cfg *config.Config, logger *log.SugaredLogger, userStore userStore,;
 //minioStore db.MinioStore
 ) *Server {
 	srv := &Server{
@@ -36,15 +48,19 @@ func NewServer(cfg *config.Config, logger *log.SugaredLogger,
 			ReadTimeout:  time.Duration(cfg.API.ReadTimeout),
 			WriteTimeout: time.Duration(cfg.API.WriteTimeout),
 		},
-		rm:     NewResponseManager(logger),
-		cfg:    cfg,
-		logger: logger,
+		respond: NewResponseManager(logger),
+		cfg:     cfg,
+		logger:  logger,
+
+		userStore: userStore,
 		//minioStore: minioStore,
 	}
 
 	r := chi.NewRouter()
 
 	//r.Handle("/", graphql)
+
+	r.Post("/auth", srv.auth)
 	srv.Handler = r
 	return srv
 }

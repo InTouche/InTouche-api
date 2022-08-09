@@ -9,7 +9,7 @@ func main() {
 
 	cfgPath, ok := os.LookupEnv("CONFIG_PATH")
 	if !ok {
-		cfgPath = "./config.json"
+		cfgPath = "./config.local.json"
 	}
 	cfg, err := config.NewConfig(cfgPath)
 	if err != nil {
